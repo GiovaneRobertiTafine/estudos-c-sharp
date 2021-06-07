@@ -66,6 +66,59 @@ namespace Linq
             foreach (var arq in query3)
                 Console.WriteLine(arq);
 
+
+            // Cláusula where
+            // A cláusula where permite filtrar elementos da fonte de dados baseada em um ou mais
+            //expressôes booleanas separadas pelos operadores lógicos &&(e) ou ||(ou)
+
+            // Por exemplo, se obter uma relação com todos os arquivos executáveis da pasta
+            //C:/Windows com tamanho superior a 1mb, classificados em ordem crescente do tamanho do arquivo
+
+            var query4 = from arquivo in Directory.GetFiles(@"C:/Windows")
+                         let infoArquivo = new FileInfo(arquivo)
+                         let tamanhoArquivoMB = infoArquivo.Length / 1024M / 1024M
+                         where tamanhoArquivoMB > 1M &&
+                            infoArquivo.Extension.ToUpper() == ".EXE"
+                         orderby tamanhoArquivoMB
+                         select new
+                         {
+                             Nome = infoArquivo.Name,
+                             Tamanho = tamanhoArquivoMB
+                         };
+
+            Console.WriteLine("query4 -------------------------");
+            foreach (var arq in query4)
+                Console.WriteLine(arq);
+
+            // Cláusula group, by e into
+            // A cláusula group agrupa os resultados de uma consulta de acordo com valores específicos de chaves.
+            //Ela é usada em conjunto com as palavras-chave by e into
+
+            // A cláusula group retorna uma sequência de objetos do tipo System.Linq.IGrouping<TKey, TElement>,
+            //que contém zero ou mais itens que correspondem ao valor da chave para o grupo
+
+            // O LINQ fornece uma série de Standard Query Operators para executar operações de agregação em dados agrupados,
+            //assim como ocorrem com o SQL. As operações de agregação disponíveis, estão expostas por meio de métodos de extensão
+            //definidos nas classes estáticas System.Linq.Enumerable e System.Linq.Queryable
+
+            var query5 = from arquivo in Directory.GetFiles(@"C:\Windows")
+                         let infoArquivo = new FileInfo(arquivo)
+                         group infoArquivo by infoArquivo.Extension.ToUpper() into g
+                         let extensao = g.Key
+                         orderby extensao
+                         select new
+                         {
+                             Extensao = extensao,
+                             NumeroArquivos = g.Count(),
+                             TamanhoTotalArquivosKB = g.Sum(fi => fi.Length) / 1024M,
+                             TamanhoMedioArquivoKB = g.Average(fi => fi.Length) / 1024D,
+                             TamanhoMenorArquivosKB = g.Min(fi => fi.Length) / 1024D,
+                             TamanhoMaiorArquivosKB = g.Max(fi => fi.Length) / 1024M
+                         };
+
+            Console.WriteLine("query5 -------------------------");
+            foreach (var arq in query5)
+                Console.WriteLine(arq);
         }
     }
 }
