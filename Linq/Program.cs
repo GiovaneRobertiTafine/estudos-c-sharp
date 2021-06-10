@@ -6,6 +6,15 @@ namespace Linq
 {
     class Program
     {
+        public static string[] obterTodosArquivosDotNet()
+        {
+            return Directory.GetFiles(
+                    @"C:\Windows\Microsoft.NET\Framework\v4.0.30319",
+                    "*",
+                    SearchOption.AllDirectories
+            );
+        }
+
         static void Main(string[] args)
         {
             // Query onde sera listado todos os arquivos do diretorio
@@ -119,6 +128,119 @@ namespace Linq
             Console.WriteLine("query5 -------------------------");
             foreach (var arq in query5)
                 Console.WriteLine(arq);
+
+            // Utilizando group by into com tipo anônimo e ordenamento
+
+            var query6 = from arquivo in obterTodosArquivosDotNet()
+                         let infoArquivo = new FileInfo(arquivo)
+                         group infoArquivo by new
+                         {
+                             Pasta = infoArquivo.DirectoryName,
+                             Extensao = infoArquivo.Extension.ToUpper()
+                         }
+                         into infoArquivosPorPastaExtensao
+                         let tamanhoKB = infoArquivosPorPastaExtensao.Sum(i => i.Length) / 1024M
+                         orderby infoArquivosPorPastaExtensao.Key.Pasta,
+                            tamanhoKB descending
+                         select new
+                         {
+                             infoArquivosPorPastaExtensao.Key.Pasta,
+                             infoArquivosPorPastaExtensao.Key.Extensao,
+                             NumeroArquivos = infoArquivosPorPastaExtensao.Count(),
+                             tamanhoKB
+                         };
+
+            Console.WriteLine("query6 -------------------------");
+            foreach (var arq in query6)
+                Console.WriteLine(arq);
+
+
+
+            // Cláusula join, in, on e equals
+            // No código entre a cláusula "join" e a palavra-chave "in" há um identificador (tamanhoTotalPorPasta)
+            //que representa cada elemento da fonte de dados (tamanhosTotaisPorPasta). Em seguida a palavra-chave "on"
+            //identifca a condição de junção, com uso obrigatório da palavra-chave equals para realizar a comparação de igualdade
+
+            // A junção é realizada pela comparação das pastas em ambas as coleções. Finalmente, o resultado da junção
+            //é armazenado na variável cujo identificador é definido após a palavra-chave "into" (juncaoComTamanhoJB).
+            // Neste caso, a junção sempre retorna um único elemento correspondente da fonte de dados tamanhosTotaisPorPasta,
+            //porém, o resultado sempre é armazenado numa coleção, uma vez que a comparação poderia trazer vários elementos.
+            // Sendo assim, foi usado o Standard Query Operator Single() para extrair o elemento único e acessar a sua propriedade
+            //com o tamanho total em KB (tamanhoTotalKB)
+
+            string[] arquivosDotNet = obterTodosArquivosDotNet();
+
+            var tamanhosTotaisPorPasta = from arquivo in arquivosDotNet
+                                         let infoArquivo = new FileInfo(arquivo)
+                                         group infoArquivo by infoArquivo.DirectoryName into g
+                                         select new
+                                         {
+                                             Pasta = g.Key,
+                                             TamanhoTotalKB = g.Sum(i => i.Length) / 1024M
+                                         };
+
+            Console.WriteLine("query7 -------------------------");
+            Console.WriteLine("tamanhosTotaisPorPasta -----------");
+            foreach (var arq in tamanhosTotaisPorPasta)
+                Console.WriteLine(arq);
+
+
+            var query7 = from arquivo in arquivosDotNet
+                         let infoArquivo = new FileInfo(arquivo)
+                         group infoArquivo by new
+                         {
+                             Pasta = infoArquivo.DirectoryName,
+                             Extensao = infoArquivo.Extension.ToUpper()
+                         }
+                        into infoArquivoPorPastaExtensao
+                         //select new
+                         //{
+                         //    infoArquivoPorPastaExtensao.Key.Pasta,
+                         //    infoArquivoPorPastaExtensao.Key.Extensao
+                         //};
+                         join tamanhoTotalPorPasta in tamanhosTotaisPorPasta
+                         on infoArquivoPorPastaExtensao.Key.Pasta
+                         equals tamanhoTotalPorPasta.Pasta
+                         into juncaoComTamanhoTotalKB
+                         //select new
+                         //{
+                         //    juncaoComTamanhoTotalKB.Single().Pasta,
+                         //    juncaoComTamanhoTotalKB.Single().TamanhoTotalKB
+                         //};
+                         let tamanhoTotalKB = juncaoComTamanhoTotalKB.Single().TamanhoTotalKB
+                         let tamanhoKB = infoArquivoPorPastaExtensao.Sum(i => i.Length) / 1024M
+                         //select new
+                         //{
+                         //    tamanhoTotalKB,
+                         //    tamanhoKB
+                         //};
+                         orderby infoArquivoPorPastaExtensao.Key.Pasta,
+                            tamanhoKB descending
+                         select new
+                         {
+                             infoArquivoPorPastaExtensao.Key.Pasta,
+                             infoArquivoPorPastaExtensao.Key.Extensao,
+                             NumeroArquivos = infoArquivoPorPastaExtensao.Count(),
+                             Tamanho = tamanhoKB,
+                             Porcetagem = 100 * (tamanhoKB / tamanhoTotalKB)
+                         };
+
+
+            Console.WriteLine("juncaoComTamanhoTotalKB -----------");
+            foreach (var arq in query7)
+                Console.WriteLine(arq);
+
+           
+
+
+
+
+           
+
+            
+
+
+
         }
     }
 }
