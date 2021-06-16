@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linq", "Linq\Linq.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessamentoAssincrono", "ProcessamentoAssincrono\ProcessamentoAssincrono.csproj", "{6FAF3DE9-7077-43D1-9CF9-FB7E16C45426}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflexao", "Reflexao\Reflexao.csproj", "{253C30B6-B2F1-426D-BA38-E16B37D3A3C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{6FAF3DE9-7077-43D1-9CF9-FB7E16C45426}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FAF3DE9-7077-43D1-9CF9-FB7E16C45426}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FAF3DE9-7077-43D1-9CF9-FB7E16C45426}.Release|Any CPU.Build.0 = Release|Any CPU
+		{253C30B6-B2F1-426D-BA38-E16B37D3A3C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{253C30B6-B2F1-426D-BA38-E16B37D3A3C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{253C30B6-B2F1-426D-BA38-E16B37D3A3C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{253C30B6-B2F1-426D-BA38-E16B37D3A3C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
