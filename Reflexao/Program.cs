@@ -8,6 +8,26 @@ namespace Reflexao
     {
         static void Main(string[] args)
         {
+            Type c = Type.GetType("Reflexao.Cliente");
+            // Da forma que esta abaixo, esta atribuindo um construtor sem parametros, por conta do Type.EmptyTypes
+            // ConstructorInfo ctor = c.GetConstructor(Type.EmptyTypes);
+            ConstructorInfo ctor = c.GetConstructor(new Type[] { typeof(string) });
+            var obj = ctor.Invoke(new object[] { "Inicial" });
+            MethodInfo imp = c.GetMethod("Imprimir");
+
+            var initiatedObject = (Cliente)Activator.CreateInstance(c, "Nome");
+
+            // Podemos invocar o método sem passar parametros, com o null
+            imp.Invoke(obj, new object[] { null });
+            // Podemos invocar o método passando o parametro
+            // Como invocamos desta forma, não sabemos quantos parametros são, por isso passamos um array
+            imp.Invoke(obj, new object[] { "Sobrenome" });
+
+            initiatedObject.GetNome();
+
+            // O código acima, implementa a invocação de uma classe e o método da mesma por reflexão
+            //com isso, em tempo de execução, não precisamos instância da forma tradicional
+
             Type t = typeof(Carro);
 
             GetParametros(t);
