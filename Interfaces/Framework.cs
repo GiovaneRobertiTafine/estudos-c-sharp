@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Data.SqlClient;
+using System.Collections;
 
 // Interface com classe abstrata 
 namespace Interfaces
@@ -183,6 +185,108 @@ namespace Interfaces
         //{
         //    Console.WriteLine("Descompactando arquivo...Decla");
         //}
+    }
+
+}
+
+
+// ------------------------------------------------------------------------------
+
+// IDisposable
+
+public class Disposable : IDisposable
+{
+    // Recurso figurativo, que não esta sendo gerenciado pela CLR
+    public string Handle;
+
+    // Propriedade utlizada para quando se valida a chamada do dispose
+    //no código onde esta sendo utilizada esta classe
+    private bool Disposing;
+
+    public Disposable()
+    {
+        this.Handle = "Recurso Alocado";
+        Console.WriteLine("Recurso Alocado");
+        this.Disposing = false;
+    }
+
+    // Esee método do Dispose é para quando não se tem validacao para ver
+    //se no código que está utlizando essa classe está chamando o dispose,
+    //public void Dispose()
+    //{
+    //    Console.WriteLine("Dispose");
+    //    this.Handle = "";
+    //    Console.WriteLine("Recurso liberado com sucesso");
+    //}
+
+    // Esse método do Dispose é para quando se tem a validacao para ver
+    //se no código que está utlizando essa classe etá chamando o dispose,
+    //pois ao utilizar o using, automaticament ele vai executar o dispose
+    public void Dispose()
+    {
+        if (!this.Disposing)
+        {
+            Handle = "";
+            Console.WriteLine("Recurso liberado com sucesso");
+            this.Disposing = true;
+        }
+
+    }
+
+    public void Conectar()
+    {
+        Console.WriteLine("Conectado");
+    }
+
+}
+
+// ------------------------------------------------------------------------------
+
+// IEnumerable
+
+class ListaClientes : IEnumerable
+{
+    private readonly IReadOnlyList<string> clientes;
+
+    public ListaClientes()
+    {
+
+        this.clientes = new List<string> {
+                "Giovane",
+                "Roberti",
+                "Tafine"
+            };
+
+    }
+
+    // Retorna uma lista
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        foreach (string c in this.clientes)
+        {
+            yield return c + " IEnumerable.GetEnumerator";
+        }
+
+    }
+
+    public IEnumerator<string> GetEnumerator()
+    {
+        foreach (string c in this.clientes)
+        {
+            yield return c + " IEnumerator<string> GetEnumerator()";
+        }
+    }
+
+    public IReadOnlyList<string> GetClientes()
+    {
+        return this.clientes;
+    }
+
+    public IEnumerable<string> GetEnumerable()
+    {
+        yield return this.clientes[0] + " GetEnumerable";
+        yield return this.clientes[1] + " GetEnumerable";
+        yield return this.clientes[2] + " GetEnumerable";
     }
 
 }

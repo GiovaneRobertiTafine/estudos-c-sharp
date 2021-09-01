@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Data.SqlTypes;
 namespace Interfaces
 {
     class Program
@@ -46,7 +46,60 @@ namespace Interfaces
             img.Compactar();
             img.Descompactar();
             
+            // ------------------------------------------------------------------------------
+
+            // Bloco para estudo de implementacao de IDisposable
+
+            // No código a baixo é um exemplo para que chame o Close ou Dispose manualmento
+            // Por exemplo se por acaso acontecer algo de errado dentro do escopo do try/
+            //pode ser que esse objeto nao seja coletado pelo Garbage Collector e mantendo esse recurso ativo em memória
+            // Por isso utilizado o finally com o Dispose ou Close
+            var conDisposable = new SqlConnection();
+            try
+            {
+                //...
+            }
+            finally
+            {
+                if (conDisposable != null)
+                    conDisposable.Close();
+            }
+
+            // Utilizando o using automaticamente ele vai utlizar dispose ao finalizar
+            //using (IDisposable obj = new Disposable())
+            //{
+            //    //...
+            //}
+
+            using (Disposable conexao = new Disposable())
+            {
+                conexao.Conectar();
+            }
+
+            // ------------------------------------------------------------------------------
+
+            // Bloco para estudo de implementacao de IEnumerable
+
+            var clientes = new ListaClientes();
+
+            foreach (var c in clientes)
+            {
+                Console.WriteLine(c);
+            }
+
+            foreach (var i in clientes.GetClientes())
+            {
+                Console.WriteLine(i);
+            }
+
+            foreach (var i in clientes.GetEnumerable())
+            {
+                Console.WriteLine(i);
+            }
+
             Console.ReadLine();
+
+
         }
     }
 
